@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link, Navigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,24 +12,32 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import SvgIcon from '@mui/material/SvgIcon';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { UserContext } from './context/UserContext';
-import axios from 'axios';
-
-function HomeIcon(props) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-    </SvgIcon>
-  );
-}
+import logo from './assets/images/gourmand-logo5.png';
+import axiosRender from './utils/axios';
+import Link from '@mui/material/Link';
+import HomeIcon from '@mui/icons-material/Home';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+const theme = createTheme({
+  components: {
+    // Name of the component ⚛️
+    MuiButtonBase: {
+      defaultProps: {
+        // The props to apply
+        disableRipple: true, // No more ripple, on the whole application 💣!
+      },
+    },
+  },
+});
+
 const Navbar = () => {
+  const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userContext, setUserContext] = React.useContext(UserContext);
@@ -51,41 +59,51 @@ const Navbar = () => {
 
   const logout = () => {
 
-    const config = {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${userContext.token}`
-      }
-    };
+    // const config = {
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": `Bearer ${userContext.token}`
+    //   }
+    // };
 
-    axios.get('/api/auth/logout', config)
+    axiosRender.get('/api/auth/logout', {headers: {
+      "Authorization": `Bearer ${userContext.token}`
+    }})
     .then(async response => {
       setUserContext(oldValues => {
-        return { ...oldValues, token: null }
+        return { ...oldValues, token: null, details: {} }
       })
       window.localStorage.setItem("logout", Date.now())
+      navigate('/login')
     })
   }
 
-  const getUserInfo = () => {
-
-  }
 
   return (
+    // sx={{mb: '20px'}}''
     <>
-    <AppBar  sx={{mb: '20px'}} position="fixed">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-          >
-            HOTELS
-          </Typography>
-
+    <ThemeProvider theme={ theme }>
+    <AppBar position='fixed' 
+      sx={{ background: '#fff', 
+        color:'#2D3843', 
+        boxShadow: 'none', 
+        backdropFilter:'blur(8px)', 
+        borderStyle: 'solid',
+        borderColor: '#E7EBF0',
+        borderWidth: '0',
+        borderBottomWidth: 'thin',
+        backgroundColor: 'rgba(255,255,255,0.8)', 
+        
+      }}>
+      <Container maxWidth="xl" >
+        <Toolbar disableGutters >
+          
+          <Box
+            component='img'
+            src={logo}
+            sx={{height: '40px', width:'100px', display:{ xs: 'none', md: 'flex'}}}
+          />
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -112,69 +130,71 @@ const Navbar = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', md: 'none'},
+                
               }}
             >
               
-                <MenuItem component={Link} to='/'
+                <MenuItem component={Link} href='/'
                 onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center"> Go Home </Typography>
+                  <Typography textAlign="center"> Home </Typography>
                 </MenuItem>
-                <MenuItem component={Link} to='/hotels'
+                <MenuItem component={Link} href='/restaurants'
                 onClick={handleCloseNavMenu}
                 >
-                  <Typography textAlign="center">
-                    Hotels</Typography>
+                  <Typography textAlign="center" >
+                    Restaurants</Typography>
                 </MenuItem>
-                <MenuItem component={Link} to='/new'
+                <MenuItem component={Link} href='/new'
                 onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    Add Hotel</Typography>
+                    Add Restaurant</Typography>
                 </MenuItem>
               
             </Menu>
+            <Box
+            component='img'
+            src={logo}
+            sx={{height: '30px', width:'100px', margin: '2% auto 0'}}
+          />
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-          >
-            HOTELS
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, my: 1, mx: 1.5 }}>
+          
+          <Box sx={{ flexGrow: 1, justifyContent:'flex-end', display: { xs: 'none', md: 'flex' }, my: 1, mx: 1.5 }} >
               <Button
+                disableRipple={true}
                 href='/'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                <HomeIcon color='success' sx={{color: 'white'}}/>
+                sx={{  my: 2, display: 'block', '&:hover':{ backgroundColor: 'transparent'}}}
+                >
+                <HomeIcon sx={{marginLeft: '72px', marginRight: '32px', color:'black', '&:hover':{ color: '#4287f5'}}} />
               </Button>
               <Button
-                href='/hotels'
+                href='/restaurants'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                disableRipple={true}
+                sx={{ '&:hover':{ backgroundColor: 'transparent', color: '#4287f5'}, my: 2, color: 'black', display: 'block', paddingRight:'32px', textTransform: 'capitalize' }}
               >
-                Hotels
+                Restaurants
               </Button>
               <Button
                 href='/new'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ '&:hover':{ backgroundColor: 'transparent', color: '#4287f5'}, my: 2, color: 'black', display: 'block', paddingRight:'32px', textTransform:'capitalize'}}
+                disableRipple={true}
               >
-                Add Hotel
+                Add Restaurant
               </Button>
             
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={userContext.token ? 'View Account' : 'Login'}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src={userContext.details ? userContext.details.avatarImage.url : '' } sx={{ width: 56, height: 56 }}/>
+                <Avatar src={userContext.details && userContext.details.avatarImage ? userContext.details.avatarImage.url : '' } sx={{ width: { xs:40, md: 56 }, height: { xs:40, md: 56 } }}/>
               </IconButton>
             </Tooltip>
 
-            {userContext.token && userContext.details && <Menu
+             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -190,22 +210,21 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {/* {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))} */}
-              
-              <Link to={`/aboutme/${userContext.details._id}`}><MenuItem>Profile</MenuItem></Link>
-              <MenuItem onClick={logout}>Logout</MenuItem>
-              
+              {userContext.token && userContext.details && userContext.token !== null ? 
+              <div>
+                <Link href={`/aboutme/${userContext.details._id}`} underline='none' sx={{color: 'black'}}><MenuItem>Profile</MenuItem></Link>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+              </div>
+                : <Link href='/login' underline='none'><MenuItem>Login</MenuItem></Link>}
             
-            </Menu>}
+            </Menu>
           </Box>
         </Toolbar>
       </Container>
       
     </AppBar>
+    </ThemeProvider>
+    
   </>)
 };
 

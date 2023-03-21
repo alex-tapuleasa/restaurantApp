@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.24.0",
     "formik": "^2.2.9",
+    "framer-motion": "^4.1.17",
     "mapbox-gl": "^2.10.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -21,6 +22,7 @@
     "react-router-dom": "^6.0.2",
     "react-scripts": "^5.0.1",
     "react-swipeable-views": "^0.14.0",
+    "react-toastify": "^9.1.1",
     "react-window": "^1.8.6",
     "use-deep-compare-effect": "^1.8.1",
     "web-vitals": "^1.1.2",
@@ -38,17 +40,9 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "proxy": "http://localhost:5000/"
+  "browserslist": [
+    "defaults",
+    "not ie 11"
+  ]
+ 
 }

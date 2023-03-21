@@ -1,17 +1,18 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const Hotel = require('../models/hotels');
+const Restaurant = require('../models/restaurants');
 const ExpressError = require('../utils/ExpressError');
 const sendEmail = require('../utils/sendEmail');
 const protect = require('../middleware/auth');
 
 const { cloudinary } = require('../cloudinary');
 const multer = require('multer');
-const { storage } = require('../cloudinary');
-const hotels = require('../models/hotels');
+
 const { authorize } = require('passport');
+const { storage } = require('../cloudinary');
 const upload = multer({ storage });
+// const restaurants = require('../models/restaurants');
 
 
 exports.register = async (req, res, next) => {
@@ -56,7 +57,7 @@ exports.refreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
     // console.log(`This is the refreshToken in cookie: ${refreshToken}`);
-
+    // if(!refreshToken) return
     if(refreshToken) {
 
         try {
@@ -76,16 +77,18 @@ exports.refreshToken = (req, res, next) => {
                         else {
                             const token = user.getSignedJwtToken({_id: userId}); 
                             // console.log(`This is the generated token ${token}`)
-                            const newRefreshToken = user.getSignedRefreshToken({_id: userId}); 
+                            // const newRefreshToken = user.getSignedRefreshToken({_id: userId}); 
                             // console.log(`This is the new refreshToken ${newRefreshToken}`)
-                            user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
+                            // user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
 
                             user.save((err, user) => {
                                 if(err) {
                                     return next(new ExpressError('Something went wrong', 500))
                                 }
                                 else {
-                                    res.cookie('refreshToken', newRefreshToken, {
+                                    res.cookie('refreshToken', refreshToken, {
+                                        sameSite: 'None',
+                                        secure: true,
                                         httpOnly: true,
                                         signed: true,
                                         maxAge: 60 * 60 * 24 * 30 * 1000
@@ -156,7 +159,7 @@ exports.forgotpassword = async (req, res, next) => {
       const resetToken = user.getResetPasswordToken();
       user.save();
       
-      const resetUrl = `http://localhost:3000/resetpassword/${resetToken}`;
+      const resetUrl = `https://restaurantguide2023.onrender.com/resetpassword/${resetToken}`;
 
       const message = `
       <h2>You have requested a password reset</h2>
@@ -220,6 +223,9 @@ exports.resetpassword = async (req, res, next) => {
 exports.uploadAvatar = async (req, res) => {
     const {id} = req.params;
     const user = await User.findById(id);
+    if(user.avatarImage.filename){
+        await cloudinary.uploader.destroy(user.avatarImage.filename)
+    }
     user.avatarImage.url = req.file.path;
     user.avatarImage.filename = req.file.filename;
     await user.save();
@@ -227,10 +233,10 @@ exports.uploadAvatar = async (req, res) => {
 }
 
 
-exports.getUserHotels = async (req, res) => {
+exports.getUserRestaurants = async (req, res) => {
  const {id} = req.params;
- const userHotels = await Hotel.find({author : id});                          
- res.send(userHotels);
+ const userRestaurants = await Restaurant.find({author : id});                          
+ res.send(userRestaurants);
 };
 
 // ===================================================================================================================
@@ -241,6 +247,8 @@ const sendToken = (user, statusCode, res) => {
     user.refreshToken.push({refreshToken});
     user.save();
     res.cookie('refreshToken', refreshToken, {
+        sameSite: 'None',
+        secure: true,
         httpOnly: true,
         signed: true, 
         maxAge: 60 * 60 * 24 * 30 * 1000
@@ -248,7 +256,8 @@ const sendToken = (user, statusCode, res) => {
     })
     res.status(statusCode).json({
         succes: true,
-        token
+        token,
+        user
     })
 }
 

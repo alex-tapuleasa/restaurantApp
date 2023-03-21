@@ -9,11 +9,17 @@ import reportWebVitals from './reportWebVitals';
 
 import { UserProvider } from './context/UserContext';
 
+import { ToastContainer, Zoom} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 
 ReactDOM.render(
   <BrowserRouter>
     <UserProvider>
       <App />
+      <ToastContainer transition={Zoom} position='top-center' hideProgressBar='true' autoClose={3000} pauseOnFocusLoss={false}/>
     </UserProvider>
   </BrowserRouter>
 ,

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const protect = require('../middleware/auth');
+// const { protect } = require('../middleware/auth');
 
 const { 
     register,
@@ -8,7 +8,7 @@ const {
     forgotpassword,
     resetpassword,
     refreshToken,
-    logout, uploadAvatar, getUserHotels
+    logout, uploadAvatar, getUserRestaurants
 } = require('../controllers/auth');
 
 const { cloudinary } = require('../cloudinary');
@@ -30,7 +30,7 @@ router.route('/resetpassword/:resetToken').put(resetpassword)
 
 router.route('/useravatarimage/:id').put(upload.single('avatarImage'), uploadAvatar);
 
-router.route('/userhotels/:id').get(getUserHotels);
+router.route('/userrestaurants/:id').get(getUserRestaurants);
 
 
 module.exports = router;

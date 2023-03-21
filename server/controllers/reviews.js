@@ -1,18 +1,20 @@
-const Hotel = require('../models/hotels');
+const Restaurant = require('../models/restaurants');
 const Review = require('../models/reviews');
+const { authorize } = require('passport');
+
 
 module.exports.createReview = async (req, res) => {
-    const hotel = await Hotel.findById(req.params.id);
+    const restaurant = await Restaurant.findById(req.params.id);
     const review = await new Review({...req.body});
     review.author = req.user._id;
-    await hotel.reviews.push(review);
-    hotel.populate({
+    await restaurant.reviews.push(review);
+    restaurant.populate({
         path: 'reviews',
         populate: {
             path: 'author'
         }
      });
-    await hotel.save();
+    await restaurant.save();
     review.populate('author');
     await review.save();
     res.send(review);
@@ -26,7 +28,7 @@ module.exports.showReview = async (req, res) => {
    
 module.exports.deleteReview = async (req, res) => {
     const {id, reviewId} = req.params;
-    const hotel = await Hotel.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+    const restaurant = await Restaurant.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
     await Review.findByIdAndDelete(reviewId);   
-    res.send(hotel);
+    res.send(restaurant);
   };   

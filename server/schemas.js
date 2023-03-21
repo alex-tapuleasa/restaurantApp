@@ -1,6 +1,6 @@
 const Joi = require ('joi');
 
-module.exports.hotelSchema = Joi.object({
+module.exports.restaurantSchema = Joi.object({
  title: Joi.string().required(),
  location: Joi.string().required(),
  description: Joi.string().required().min(20),

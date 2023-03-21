@@ -10,7 +10,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://www.linkedin.com/in/tapuleasa-marcel-6065a3139/">
-        Marcel Tapuleasa a.k.a Macecea
+        Alex Tapuleasa a.k.a Gutzi
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

@@ -30,8 +30,8 @@ const UserSchema = new Schema({
         minlength: 8,
         select: false
     },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetPasswordToken:  String ,
+    resetPasswordExpire:  Date ,
     refreshToken: {
         type: [Session],
       },

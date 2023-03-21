@@ -19,7 +19,7 @@ import { UserContext } from '../../context/UserContext';
 
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
+import axiosRender from '../../utils/axios';
 
 const validationSchema = yup.object({
   email: yup
@@ -48,15 +48,15 @@ export default function SignIn() {
     const {email, password} = values;
 
     try {
-      const { data } = await axios.post('/api/auth/login', {email, password});
+      const { data } = await axiosRender.post('/api/auth/login', {email, password});
 
       setUserContext(oldValues => {
-        return { ...oldValues, token: data.token}
+        return { ...oldValues, token: data.token, details: data.user}
       })
 
       // localStorage.setItem('authToken', data.token)
 
-      navigate('/hotels');
+      navigate('/restaurants');
       console.log(userContext)
 
     } catch (error) {
@@ -81,7 +81,7 @@ export default function SignIn() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: '10rem',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

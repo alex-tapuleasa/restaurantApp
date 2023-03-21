@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ExpressError = require('../utils/ExpressError');
+const { authorize } =require('passport')
 
 
 exports.protect = async (req, res, next) => {
 
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         token = req.headers.authorization.split(" ")[1];
+        
     }
 
     if(!token) {

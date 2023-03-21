@@ -1,40 +1,32 @@
-import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import React, { useContext} from 'react';
+import axiosRender from '../../utils/axios';
 import {useNavigate} from 'react-router-dom';
-import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import MonetizationOnTwoToneIcon from '@mui/icons-material/MonetizationOnTwoTone';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { withStyles } from '@mui/styles';
 
-import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 import { UserContext } from '../../context/UserContext';
 
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { ImageListItem } from '@mui/material';
 
+import { toast } from 'react-toastify';
 
-
-
-const theme = createTheme();
 
 const styles = {
   main: {
-    margin: '7% auto',
     padding: '32px',
-    width: '30%',
+    // width: '30%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'rgb(6, 122, 184)',
-    borderRadius: 3,
+    // borderRadius: 3,
     backgroundColor: 'white',
     boxShadow: '5px 5px 20px -4px #EACDF2'
 
@@ -53,15 +45,15 @@ const styles = {
 }
 
     // const FILE_SIZE = 160 * 1024;
-    const SUPPORTED_FORMATS = [
-      "image/jpg",
-      "image/jpeg",
-      "image/png"
-    ];
+    // const SUPPORTED_FORMATS = [
+    //   "image/jpg",
+    //   "image/jpeg",
+    //   "image/png"
+    // ];
 
 const validationSchema = yup.object().shape({
     title: yup
-      .string('Enter Hotel Name')
+      .string('Enter Restaurant Name')
       .required('Name is required'),
     location: yup
       .string('Enter location')
@@ -75,19 +67,10 @@ const validationSchema = yup.object().shape({
     .min(0, 'Price should be greater than 0')
     .required('Price is required'),
     images: yup.mixed()
-    // .test(
-    //   'fileSize', 
-    //   'File too large',
-    //   value => value && value.size <= FILE_SIZE
-    // )
-    // .test(
-    //   'fileFormat',
-    //   'Unsupported file format',
-    //   value => value && SUPPORTED_FORMATS.includes(value.type)
-    // )
+    
   });
 
-function NewHotelForm (props) {
+function NewRestaurantForm (props) {
 
  
 
@@ -114,17 +97,32 @@ function NewHotelForm (props) {
 
 
 
-    const config = {
-      credentials: "include",
-      headers: {
+    // const config = {
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //     "Authorization": `Bearer: ${userContext.token}`
+    //   }
+      
+    // }
+    const promise = axiosRender.post('/restaurants/new', formData, {headers: {
         "Content-Type": "multipart/form-data",
         "Authorization": `Bearer: ${userContext.token}`
-      }
-      
-    }
-    await axios.post('/hotels/new', formData, config );
+      }} );
   
-    navigate('/hotels')
+    await toast.promise(promise, {
+      pending: {
+       render: 'Saving restaurant details',
+       // disable the delay for pending state
+       delay: undefined
+      },
+      success: {render: 'Restaurant saved successfully!', delay: 100},
+      error: 'Something went wrong.',
+    }, {
+    delay: 500
+    });
+  
+    setTimeout(() => {navigate('/restaurants')}, 2000)
     // {title: title, location: location, description: description, price: price}
 };
 
@@ -138,30 +136,32 @@ const formik = useFormik({
 });
 
 return(
-  <form
+  
+  
+<form
   encType='multipart/form-data'
             noValidate
             onSubmit={formik.handleSubmit}>
 
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-            <Box
-            // component='form'
-            // encType='multipart/form-data'
-            // noValidate
-            // onSubmit={formik.handleSubmit}
+    
+          <Box
             className={classes.main}
+            sx={{
+              width: {sm:'80%', md:'50%', lg: '40%', xl:'30%'}, 
+              margin: {xs: '5rem auto', sm: '7rem auto', lg: '12rem auto', xl:'12rem auto'},
+              borderRadius: {xs: '4%', lg:'7%'}
+          }}
             >
               
-                <Typography className={classes.sloganText}>Enlist your Hotel with us</Typography>
+                <Typography className={classes.sloganText}>Enlist your Restaurant with us</Typography>
               <TextField
                 fullWidth
                 sx={{mt:'32px'}}
                 variant='outlined'
-                label='Hotel Name'
+                label='Restaurant Name'
                 name='title'
                 value={formik.values.title}
-                placeholder='Enter Hotel Name'
+                placeholder='Enter Restaurant Name'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.title && Boolean(formik.errors.title)}
@@ -199,43 +199,50 @@ return(
                 helperText={formik.touched.description && formik.errors.description}
                 />
 
-            <div>
-            <MonetizationOnTwoToneIcon sx={{color: 'green', mt: 4}}/>     
-            <TextField
-                sx={{mt:'45px', mr: 'auto'}}
-                id="filled-number"
-                name='price'
-                value={formik.values.price}
-                label="Price/night"
-                type="number"
-                InputLabelProps={{
-                shrink: true,
-                }}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.price && Boolean(formik.errors.price)}
-                helperText={formik.touched.price && formik.errors.price}
-            />
+            <div style ={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'100%', marginTop:'45px' }}>
+              <TextField
+                  sx={{alignSelf: 'flex-start'}}
+                  id="filled-number"
+                  name='price'
+                  value={formik.values.price}
+                  label="Price (EUR)"
+                  type="number"
+                  InputLabelProps={{
+                  shrink: true,
+                  }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.price && Boolean(formik.errors.price)}
+                  helperText={formik.touched.price && formik.errors.price}
+              />         
+              
+              <Button sx={{borderRadius:'5%', zIndex: 1}}  size='small' color='info' variant="outlined" component="label" startIcon={<PhotoCamera/>}>
+                  Choose Photos
+                  <input
+                  hidden 
+                  type='file'
+                  name='images'
+                  accept='image/*'
+                  multiple
+                  onChange={(e) => formik.setFieldValue('images', Array.from(e.target.files))}/>
+              </Button>
             </div>
 
-            <input 
-            type='file'
-            name='images'
-            accept='image/*'
-            multiple
-            onChange={(e) => formik.setFieldValue('images', Array.from(e.target.files))}/>
+
                 <Button
                     sx={{mt:'32px'}}
                     fullWidth
                     variant='contained'
-                    type='submit'>Add Hotel
+                    type='submit'>Add Restaurant
                 </Button>
             
         </Box>
-    </ThemeProvider>  
-    </form>      
+    
+    </form>
+    
+    
 )
 
 }
 
-export default withStyles(styles)(NewHotelForm);
+export default withStyles(styles)(NewRestaurantForm);

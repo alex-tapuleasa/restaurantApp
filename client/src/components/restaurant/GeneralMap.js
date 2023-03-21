@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef } from 'react';
+import axiosRender from '../../utils/axios';
 
 import mapboxgl from 'mapbox-gl';
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFyY2VsdGFwdWxlYXNhIiwiYSI6ImNsODJ0ZGpnbjAwdjczdnA3MnhneWN0c2wifQ._V9xXIB_NXdZiBAdB-4Haw';
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleHRhcHVsZWFzYSIsImEiOiJja242OXl4ZjYwYzZoMnhwOTZzMjdxaWZsIn0.Hd-tvdnfV7XkDffsPf2Cqg';
 
 
 const GeneralMap = () => {
-  // const [hotels, setHotels] = useState();
+  
 
 
 
@@ -14,16 +14,7 @@ const GeneralMap = () => {
     const generalMapContainer = useRef(null);
     const map = useRef(null);
 
-// useEffect(() => {
-//   async function getHotels() {
-//     const res = await axios.get('/hotels');
-//     const hotelsFeatures = {features: JSON.stringify(res.data)};
-//     console.log(hotelsFeatures);
-//     setHotels(hotelsFeatures);
-//     console.log(hotels)
-//   };
-//   getHotels();
-// },[]);    
+
     
 
 
@@ -33,9 +24,9 @@ useEffect(() => {
   
   if (map.current) return;
 
-  const res = await axios.get('/hotels');
-  const hotelsFeatures = {features: (res.data)};
-  console.log(hotelsFeatures);
+  const res = await axiosRender.get('/restaurants');
+  const restaurantsFeatures = {features: (res.data)};
+  
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFyY2VsdGFwdWxlYXNhIiwiYSI6ImNsODJ0ZGpnbjAwdjczdnA3MnhneWN0c2wifQ._V9xXIB_NXdZiBAdB-4Haw';
     map.current = new mapboxgl.Map({
     container: generalMapContainer.current,
@@ -49,11 +40,11 @@ useEffect(() => {
     // Add a new source from our GeoJSON data and
     // set the 'cluster' option to true. GL-JS will
     // add the point_count property to your source data.
-    map.current.addSource('hotels', {
+    map.current.addSource('restaurants', {
     type: 'geojson',
     // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
     // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-    data: hotelsFeatures,
+    data: restaurantsFeatures,
     // 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson'
     cluster: true,
     clusterMaxZoom: 14, // Max zoom to cluster points on
@@ -63,7 +54,7 @@ useEffect(() => {
     map.current.addLayer({
     id: 'clusters',
     type: 'circle',
-    source: 'hotels',
+    source: 'restaurants',
     filter: ['has', 'point_count'],
     paint: {
     // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
@@ -95,7 +86,7 @@ useEffect(() => {
     map.current.addLayer({
     id: 'cluster-count',
     type: 'symbol',
-    source: 'hotels',
+    source: 'restaurants',
     filter: ['has', 'point_count'],
     layout: {
     'text-field': '{point_count_abbreviated}',
@@ -107,7 +98,7 @@ useEffect(() => {
     map.current.addLayer({
     id: 'unclustered-point',
     type: 'circle',
-    source: 'hotels',
+    source: 'restaurants',
     filter: ['!', ['has', 'point_count']],
     paint: {
     'circle-color': '#11b4da',
@@ -123,7 +114,7 @@ useEffect(() => {
     layers: ['clusters']
     });
     const clusterId = features[0].properties.cluster_id;
-    map.current.getSource('hotels').getClusterExpansionZoom(
+    map.current.getSource('restaurants').getClusterExpansionZoom(
     clusterId,
     (err, zoom) => {
     if (err) return;

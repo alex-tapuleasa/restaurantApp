@@ -1,63 +1,76 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Grid, Typography, Box, Card, List, ListItem, ListItemButton, ListItemText, Link} from '@mui/material';
+import { Typography, Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { UserContext } from '../../context/UserContext';
-import axios from 'axios';
+import axiosRender from '../../utils/axios';
 
 
 function UserDashboard(props) {
 
     const[userContext, setUserContext] = useContext(UserContext);
-    const[userHotels, setUserHotels] = useState([]);
+    const[userRestaurants, setUserRestaurants] = useState([]);
 
     
 
     useEffect(() => {
-        async function getHotelData() {
-            const config = {
-                credentials: "include",
-                headers: {
-                  "Content-Type": 'application/json',
-                  "Authorization": `Bearer: ${userContext.token}`
-                }
+        async function getRestaurantsData() {
+            // const config = {
+            //     credentials: "include",
+            //     headers: {
+            //       "Content-Type": 'application/json',
+            //       "Authorization": `Bearer: ${userContext.token}`
+            //     }
                 
-              }
-         const res = await axios.get(`/api/auth/userhotels/${userContext.details._id}`, config);    
-         setUserHotels(res.data) 
+            //   }
+         const res = await axiosRender.get(`/api/auth/userrestaurants/${userContext.details._id}`, {headers: {
+            "Content-Type": 'application/json',
+            "Authorization": `Bearer: ${userContext.token}`
+          }});    
+         setUserRestaurants(res.data) 
         };
-        getHotelData();
+        getRestaurantsData();
     }, [userContext])
 
 
     
 
     return(
-        <Grid item sm={12} md={8}>
-        <Typography sx={{textAlign: 'center', marginY: '15px'}} component="h2">User Dashboard will be here!</Typography>
-        <Box sx={{
-                            height: 500,
-                            width: '100%',
+            
+            <Box sx={{
+                            
                             display: 'flex',
-                            justifyContent: 'center', alignItems: 'start',
-                            backgroundColor: '#bfb0be',
-                            '&:hover': {
-                            backgroundColor: '#f5f0f4',
-                            opacity: [0.9, 0.8, 0.7],
-                            },
+                            flexDirection: 'column',
+                            justifyContent: 'center', 
+                            alignItems: 'center',
+                            backgroundColor: 'white', 
+                            boxShadow: '0 0 30px 6px rgb(31 51 73 / 10%)',
+                            borderRadius:'5px'
+
                         }}>
+                <Typography 
+                    sx={{
+                        textAlign: 'center', 
+                        color:'#0277BD', 
+                        paddingBottom:'5%', 
+                        fontSize:{xs: '1rem', sm: '1.2rem', md: '1.2rem'}, 
+                        fontWeight:'600', 
+                        margin: '2rem auto'
+                    }} 
+                    variant='h6'>
+                    {userRestaurants && userRestaurants.length > 0 ? 
+                    `You have ${userRestaurants.length} restaurants registered` : 'No restaurants added yet'}
+                </Typography>            
             <List>
-                {userHotels?.map(hotel => (
-                    <ListItem key={hotel._id}>
-                    <ListItemButton component="a" href={`/hotels/${hotel._id}`} divider>
-                        <ListItemText primary={hotel.title}/>
+                {userRestaurants?.map(restaurant => (
+                    <ListItem key={restaurant._id}>
+                    <ListItemButton divider component="a" href={`/restaurants/${restaurant._id}`}>
+                        <ListItemText primary={restaurant.title} sx={{color: '#3949AB', '&:hover': {color: 'black'}}}/>
                         
                     </ListItemButton>
                 </ListItem>
                 ))}
             </List>
-        </Box>
-
-
-    </Grid>
+            </Box>
+            
     )
 }
 

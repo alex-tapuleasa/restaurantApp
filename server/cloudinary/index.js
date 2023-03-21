@@ -10,7 +10,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
-        folder: 'Hotels',
+        folder: 'Restaurants',
         allowedFormats: ['jpeg', 'png', 'jpg']
     }
 });

@@ -12,7 +12,7 @@ const ImageSchema = new Schema({
 const opts = { toJSON: { virtuals: true } };
 
 
-const HotelSchema = new Schema({
+const RestaurantSchema = new Schema({
 title: {type: String},
 geometry: {
     type: {
@@ -41,12 +41,20 @@ reviews: [
 ]
 }, opts);
 
-HotelSchema.virtual('properties.popUpMarkup').get(function () {
-    return `<strong><a href='/hotels/${this._id}'>${this.title}</a></strong>
+RestaurantSchema.virtual('properties.popUpMarkup').get(function () {
+    return `<strong><a href='/restaurants/${this._id}'>${this.title}</a></strong>
     <p>${this.description.substring(0,25)}...</p>`
 })
 
-HotelSchema.post('findOneAndDelete', async function (doc) {
+RestaurantSchema.virtual('averageRating').get(function() {
+    let ratings = [];
+    this.reviews?.forEach((review) => ratings.push(review.rating));
+    if(ratings.length > 0) {
+    return (ratings.reduce((a,b)=>a+b)/ratings.length).toFixed(2);}
+    return;
+})
+
+RestaurantSchema.post('findOneAndDelete', async function (doc) {
     if(doc) {
         await Review.deleteMany({
             _id: {
@@ -56,4 +64,4 @@ HotelSchema.post('findOneAndDelete', async function (doc) {
     }
 })
 
-module.exports = mongoose.model('Hotel', HotelSchema);
+module.exports = mongoose.model('Restaurant', RestaurantSchema);
