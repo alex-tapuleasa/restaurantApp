@@ -12,7 +12,7 @@ const cors = require('cors');
 const ExpressError = require('./utils/ExpressError'); 
 const restaurantRoutes = require('./routes/restaurants');
 const reviewRoutes = require('./routes/reviews');
-// const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require("helmet");
 
 
@@ -20,24 +20,17 @@ connectDB();
 
 const app = express();
 
+const corsOptions = {
+  origin: 'https://restaurantguide2023.onrender.com',
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Access-Control-Allow-Origin'],
+  exposedHeaders: ['Set-Cookie', 'Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+  credentials: true
+}
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
-
-
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error("Not allowed by CORS"))
-//     }
-//   },
-
-//   credentials: true,
-// }
 
 
 
@@ -47,11 +40,11 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// app.use(
-//   mongoSanitize({
-//     replaceWith: '_',
-//   }),
-// );
+app.use(
+  mongoSanitize({
+    replaceWith: '_',
+  }),
+);
 
 // app.use(helmet());
 

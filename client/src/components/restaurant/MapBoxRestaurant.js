@@ -21,7 +21,7 @@ useEffect(() => {
     
     async function getGeometry() {
     const res = await axiosRender.get(`/restaurants/geometry/${props.restaurantId}`);
-    console.log(`${res.data.coordinates[0]} - ${res.data.coordinates[1]}`)
+    // console.log(`${res.data.coordinates[0]} - ${res.data.coordinates[1]}`)
     setLng(res.data.coordinates[0]);
     setLat(res.data.coordinates[1]);
     }
