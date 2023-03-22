@@ -22,8 +22,8 @@ function UserDashboard(props) {
                 
             //   }
          const res = await axiosRender.get(`/api/auth/userrestaurants/${userContext.details._id}`, {headers: {
-            "Content-Type": 'application/json',
-            "Authorization": `Bearer: ${userContext.token}`
+            // "Content-Type": 'application/json',
+            "Authorization": `Bearer ${userContext.token}`
           }});    
          setUserRestaurants(res.data) 
         };

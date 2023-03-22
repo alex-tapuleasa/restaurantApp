@@ -104,8 +104,8 @@ function RestaurantDetails (props) {
                 
             //   }
             let res = await axiosRender.get(`/restaurants/${id}`, {headers: {
-              "Content-Type": 'application/json',
-              "Authorization": `Bearer: ${userContext.token}`}});
+              // "Content-Type": 'application/json',
+              "Authorization": `Bearer ${userContext.token}`}});
             setDetails(prev => res.data);
             setAuthor(res.data.author.username);
         
@@ -125,8 +125,8 @@ const removeRestaurant = async (id) => {
       
   // }
       const promise =  axiosRender.delete(`/restaurants/${id}`, {_id:id}, {headers: {
-        "Content-Type": 'application/json',
-        "Authorization": `Bearer: ${userContext.token}`
+        // "Content-Type": 'application/json',
+        "Authorization": `Bearer ${userContext.token}`
       }});
       await toast.promise(promise, {
         pending: {

@@ -65,7 +65,8 @@ function UserPhoto(props) {
         // }
 
         const res = axiosRender.put(`/api/auth/useravatarimage/${userContext.details._id}`, formData, {headers: {
-            "Authorization": `Bearer: ${userContext.token}`
+            "Content-Type": "multiform/form-data",
+            "Authorization": `Bearer ${userContext.token}`
           }} );
 
         await toast.promise(res, {

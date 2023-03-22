@@ -18,38 +18,11 @@ const NewRestaurantForm = lazy(() => import('./components/restaurant/NewRestaura
 function App() {
   const [userContext, setUserContext] = useContext(UserContext);
 
-  const verifyUser = useCallback(async () => {
-    // if(!userContext.token) return;
-  
-     const res = await axiosRender.post('/api/auth/refreshtoken', {headers: {
-      "Authorization": `Bearer: ${userContext.token}`
-    }});
-      
-     if(res.statusText === 'OK') {
-       setUserContext(oldValues => {
-         return{...oldValues, token: res.data.token}
-         
-       })
-     } else {
-       setUserContext(oldValues => {
-         return{...oldValues, token: null}
-       })
-     }
-    
-      // call refreshToken every 10 minutes to renew the authentication token.
-      setTimeout(verifyUser, 10 * 60 * 1000)
-  },[setUserContext]);
-
-  useEffect(() => {
-    verifyUser();
-    
- 
-  }, [verifyUser]);
 
 // ==============================================
 
   const fetchUserDetails = useCallback(async () => {
-    // const config = {
+   // const config = {
     //     headers: {
     //         "Content-Type": "application/json",
     //         Authorization: `Bearer ${userContext.token}`,
@@ -57,7 +30,7 @@ function App() {
     // }
 
     const res = await axiosRender.get('/api/users/me', {headers: {
-      Authorization: `Bearer ${userContext.token}`,
+      "Authorization": `Bearer ${userContext.token}`,
     }});
     
             setUserContext(oldValues => {
@@ -65,7 +38,7 @@ function App() {
             })
            
 
-}, [setUserContext, userContext.token]);
+}, [setUserContext, userContext.token]); 
 
   useEffect(() => {
     
@@ -80,6 +53,34 @@ function App() {
         }
   }, [userContext.details, userContext.token, fetchUserDetails])
 
+
+  const verifyUser = useCallback(async () => {
+    // if(!userContext.token) return;
+  
+     const res = await axiosRender.post('/api/auth/refreshtoken', {headers: {
+      "Authorization": `Bearer ${userContext.token}`
+    }});
+      
+    //  if(res.statusText === 'OK') {
+       setUserContext(oldValues => {
+         return{...oldValues, token: res.data.token}
+         
+       })
+    //  } else {
+    //    setUserContext(oldValues => {
+    //      return{...oldValues, token: null}
+    //    })
+    //  }
+    
+      // call refreshToken every 10 minutes to renew the authentication token.
+      setTimeout(verifyUser, 10 * 60 * 1000)
+  },[setUserContext]);
+
+  useEffect(() => {
+    verifyUser();
+    
+ 
+  }, [verifyUser]);
 
 
   return (

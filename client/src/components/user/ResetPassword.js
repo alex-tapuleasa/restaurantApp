@@ -38,9 +38,9 @@ const ResetPassword = ({ history, match }) => {
         {
           password,
         },
-        {header: {
-          "Content-Type": "application/json",
-        }}
+        // {header: {
+        //   "Content-Type": "application/json",
+        // }}
       );
 
 

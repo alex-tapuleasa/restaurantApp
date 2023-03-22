@@ -39,7 +39,7 @@ const Dashboard = () => {
         // };
     
         axiosRender.get('/api/auth/logout', {headers: {
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
             "Authorization": `Bearer ${userContext.token}`
           }})
         .then(async response => {

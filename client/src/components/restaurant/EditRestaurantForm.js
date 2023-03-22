@@ -79,7 +79,7 @@ const {title, location, description, price, id, classes, toggle} = props;
 
         const promise = axiosRender.put(`/restaurants/${id}/edit`, { title: values.title, location: values.location, description: values.description, price: values.price}, {headers: {
           "Content-Type": 'application/json',
-          "Authorization": `Bearer: ${userContext.token}`
+          "Authorization": `Bearer ${userContext.token}`
         }})
           
         toast.promise(promise, {

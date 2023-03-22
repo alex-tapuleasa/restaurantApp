@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ExpressError = require('../utils/ExpressError');
-const { authorize } =require('passport')
+const { authorize } = require('passport');
 
 
 exports.protect = async (req, res, next) => {

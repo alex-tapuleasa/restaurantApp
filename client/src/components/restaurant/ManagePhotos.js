@@ -140,8 +140,8 @@ function ManagePhotos(props) {
       
       const promise = axiosRender.put(`/restaurants/${id}/addphotos`, formData, {
         headers: {
-          "Content-Type": 'multiform/form-data',
-          "Authorization": `Bearer: ${userContext.token}`
+          // "Content-Type": 'multiform/form-data',
+          "Authorization": `Bearer ${userContext.token}`
         }
         
       });
@@ -175,8 +175,8 @@ function ManagePhotos(props) {
 
      const promise = axiosRender.put(`/restaurants/${id}/deletephotos`, {deleteImages: checkedImagestoDelete}, {
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer: ${userContext.token}` 
+        // "Content-Type": "application/json",
+        "Authorization": `Bearer ${userContext.token}` 
       }
     } )
       

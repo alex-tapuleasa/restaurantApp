@@ -106,8 +106,8 @@ function NewRestaurantForm (props) {
       
     // }
     const promise = axiosRender.post('/restaurants/new', formData, {headers: {
-        "Content-Type": "multipart/form-data",
-        "Authorization": `Bearer: ${userContext.token}`
+        // "Content-Type": "multipart/form-data",
+        "Authorization": `Bearer ${userContext.token}`
       }} );
   
     await toast.promise(promise, {

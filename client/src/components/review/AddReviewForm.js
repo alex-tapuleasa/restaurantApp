@@ -56,8 +56,8 @@ function AddReviewForm(props) {
             
 
         await axiosRender.post(`/restaurants/${id}/reviews`, { body: body, rating: rating}, {headers: {
-            "Content-Type": 'application/json',
-            "Authorization": `Bearer: ${userContext.token}`
+            // "Content-Type": 'application/json',
+            "Authorization": `Bearer ${userContext.token}`
           }})
         // console.log('AddReview');
         props.toggleUpdate();

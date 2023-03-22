@@ -1,6 +1,6 @@
 const Review = require('../models/reviews');
 const ExpressError = require('../utils/ExpressError');
-const { authorize } =require('passport')
+const { authorize } = require('passport');
 
 module.exports.isReviewAuthor = async (req, res, next) => {
     const { reviewId } = req.params;

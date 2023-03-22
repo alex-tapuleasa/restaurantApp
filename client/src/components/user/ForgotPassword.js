@@ -34,9 +34,9 @@ const ForgotPassword = () => {
       const promise = axiosRender.post(
         "/api/auth/forgotpassword",
         { email },
-        {header: {
-          "Content-Type": "application/json",
-        }}
+        // {header: {
+        //   "Content-Type": "application/json",
+        // }}
       );
 
 

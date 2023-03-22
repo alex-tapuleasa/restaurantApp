@@ -40,8 +40,8 @@ function Review (props) {
         // };
 
         await axiosRender.delete(`/restaurants/${restaurantId}/reviews/${props.review._id}`, {headers: {
-            "Content-Type": 'application/json',
-            "Authorization": `Bearer: ${userContext.token}`
+            // "Content-Type": 'application/json',
+            "Authorization": `Bearer ${userContext.token}`
           }});
         props.toggleUpdate();
     }
